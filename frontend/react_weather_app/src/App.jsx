@@ -1,35 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { AppBar } from "./assets/components/AppBar";
+import { CenterCaption } from "./assets/components/CenterCaption";
+import { SearchBar } from "./assets/components/SearchBar";
+import { WeatherCards } from "./assets/components/weathercards";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export const App = () => {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className=" z-20 relative min-h-screen w-full bg-slate-950">
+      {/* Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] -z-10">
+        {/* This div is purely for the background */}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
 
-export default App
+      {/* Foreground content */}
+      <div className="relative z-10">
+        <AppBar />
+        <div className="flex justify-center mt-20">
+          <CenterCaption />
+        </div>
+        <div className="mt-10">
+          <SearchBar />
+        </div>
+        <div className="mt-10">
+          <WeatherCards />
+        </div>
+      </div>
+    </div>
+  );
+};
