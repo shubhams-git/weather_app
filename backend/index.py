@@ -19,6 +19,7 @@ app.add_middleware(
 model1 = joblib.load('./models/model1.pkl')
 model2 = joblib.load('./models/model2.pkl')
 
+
 # OpenWeatherMap API setup
 API_KEY = "9802676f0284938fbb47ec64c489d768"
 
