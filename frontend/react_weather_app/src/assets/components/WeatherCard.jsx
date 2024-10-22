@@ -16,19 +16,19 @@ export const WeatherCard = ({type, day,temperature, windSpeed, precipitation, pr
         <div className="flex justify-center col-start-2 col-span-4 text-4xl text-red-50 font-serif font-extrabold mb-3">
             {temperature}°C
         </div>
-        <div className="col-start-2 col-span-4 text-base font-serif text-red-50 mb-2">
+        <div className="col-start-2 col-span-4 text-base font-mono text-red-50 mb-1">
             Wind Speed: {windSpeed} m/s
         </div>
-        <div className="col-start-2 col-span-4 text-base font-serif text-red-50 mb-2">
+        <div className="col-start-2 col-span-4 text-base font-mono text-red-50 mb-1">
             Precipitation: {precipitation} mm/h
         </div>
-        <div className="col-start-2 col-span-4 text-base font-serif text-red-50 mb-2">
+        <div className="col-start-2 col-span-4 text-base font-mono text-red-50 mb-1">
             Pressure: {pressure} hPa
         </div>
-        <div className="col-start-2 col-span-4 text-base font-serif text-red-50 mb-2">
+        <div className="col-start-2 col-span-4 text-base font-mono text-red-50 mb-1">
             Min. Temp: {tmin}°C
         </div>
-        <div className="col-start-2 col-span-4 text-base font-serif text-red-50">
+        <div className="col-start-2 col-span-4 text-base font-mono text-red-50 mb-2">
             Max. Temp: {tmax}°C
         </div>
     </div>
