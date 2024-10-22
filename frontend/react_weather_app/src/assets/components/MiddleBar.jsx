@@ -1,5 +1,5 @@
 export const MiddleBar = ()=>{
-    return <div className="flex justify-center text-white text-xl font-semibold w-1/2">
+    return <div className="flex justify-center text-white text-lg font-semibold w-1/2">
         <div className="content-center px-20">
             Home
         </div>
