@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import joblib
 import requests
+import os
 from datetime import datetime, timedelta
 
 app = FastAPI()
@@ -18,7 +19,7 @@ app.add_middleware(
 model1 = joblib.load('./models/model1.pkl')
 model2 = joblib.load('./models/model2.pkl')
 
-API_KEY = "9802676f0284938fbb47ec64c489d768"
+API_KEY = os.getenv("API_KEY", "your_default_api_key")
 
 class CityName(BaseModel):
     city: str
@@ -101,5 +102,5 @@ def predict(city: CityName):
     }
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port) 
