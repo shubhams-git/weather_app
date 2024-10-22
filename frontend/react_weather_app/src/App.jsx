@@ -12,6 +12,7 @@ export const App = () => {
   const [weatherData, setWeatherData] = useState([]);
   const [selectedCity, setSelectedCity] = useState(""); // To track the selected city
   const [searchCompleted, setSearchCompleted] = useState(false); // To track if search is complete
+  const API_URL = import.meta.env.VITE_API_URL + "/predict";
 
   const handleSearch = async (searchValue) => {
     setIsSearching(true);
@@ -22,7 +23,7 @@ export const App = () => {
       await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate delay for demo
 
       // Make the POST request to the backend
-      const response = await axios.post("http://127.0.0.1:8000/predict", {
+      const response = await axios.post(API_URL, {
         city: searchValue, // Send the city from the search bar
       });
 
