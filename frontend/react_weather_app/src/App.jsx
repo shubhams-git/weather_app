@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AppBar } from "./assets/components/AppBar";
 import { CenterCaption } from "./assets/components/CenterCaption";
 import { SearchBar } from "./assets/components/SearchBar";
-import { WeatherCards } from "./assets/components/weathercards";
+import { WeatherCards } from "./assets/components/WeatherCards";
 import { Loader } from "./assets/components/Loader";
 import { ReturnedCityText } from "./assets/components/ReturnedCityText"; // New component
 import axios from "axios";
