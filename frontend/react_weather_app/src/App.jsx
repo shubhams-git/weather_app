@@ -4,53 +4,23 @@ import { CenterCaption } from "./assets/components/CenterCaption";
 import { SearchBar } from "./assets/components/SearchBar";
 import { WeatherCards } from "./assets/components/weathercards";
 import { Loader } from "./assets/components/Loader";
+import { ReturnedCityText } from "./assets/components/ReturnedCityText"; // New component
 import axios from "axios";
 
 export const App = () => {
   const [isSearching, setIsSearching] = useState(false);
-  const [weatherData, setWeatherData] = useState([{
-    "day": "Today",
-    "weather_data": {
-        "avg_temperature": 21.5,
-        "precipitation": 23,
-        "wind_speed": 12,
-        "pressure": 1023
-    },
-    "t_max_prediction": 29.6,
-    "t_min_prediction": 18.0,
-    "type": "Sunny"
-},
-{
-    "day": "Wednesday   ",
-    "weather_data": {
-        "avg_temperature": 20.5,
-        "precipitation": 21,
-        "wind_speed": 52,
-        "pressure": 1002
-    },
-    "t_max_prediction": 22.6,
-    "t_min_prediction": 19.0,
-    "type": "Cloudy"
-},
-{
-    "day": "Friday",
-    "weather_data": {
-        "avg_temperature": 41.5,
-        "precipitation": 22,
-        "wind_speed": 19,
-        "pressure": 1015
-    },
-    "t_max_prediction": 45.6,
-    "t_min_prediction": 38.0,
-    "type": "Rainy"
-}
-]); // To store backend response
+  const [weatherData, setWeatherData] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(""); // To track the selected city
+  const [searchCompleted, setSearchCompleted] = useState(false); // To track if search is complete
 
   const handleSearch = async (searchValue) => {
-    setIsSearching(true); 
+    setIsSearching(true);
+    setSelectedCity(searchValue); // Track the city being searched
+    setSearchCompleted(false);
 
     try {
-      await new Promise((resolve)=>{return setTimeout(resolve,2000)})
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate delay for demo
+
       // Make the POST request to the backend
       const response = await axios.post("http://127.0.0.1:8000/predict", {
         city: searchValue, // Send the city from the search bar
@@ -58,12 +28,17 @@ export const App = () => {
 
       // Assuming the backend sends a list of predictions as a response
       setWeatherData(response.data.predictions); // Set the weather data state with the response
-      console.log(`response.data: ${response.data.predictions[0].day}`)
+      setSearchCompleted(true); // Mark search as completed
     } catch (error) {
-      console.error("Error fetching data from backend:", error); 
+      console.error("Error fetching data from backend:", error);
     } finally {
       setIsSearching(false); // Hide loader when the search is complete
     }
+  };
+
+  const handleBackToSearch = () => {
+    setSearchCompleted(false); // Reset the state to show the search bar again
+    setWeatherData([]); // Clear weather data if needed
   };
 
   return (
@@ -79,8 +54,14 @@ export const App = () => {
           <CenterCaption />
         </div>
         <div className="mt-10">
-          {/* Conditionally render SearchBar or Loader */}
-          {isSearching ? <Loader /> : <SearchBar onSearch={handleSearch} />}
+          {/* Conditionally render Loader, SearchBar or ReturnedCityText */}
+          {isSearching ? (
+            <Loader />
+          ) : searchCompleted ? (
+            <ReturnedCityText city={selectedCity} onBack={handleBackToSearch} />
+          ) : (
+            <SearchBar onSearch={handleSearch} />
+          )}
         </div>
         <div className="mt-10">
           {/* Render WeatherCards if weatherData is available */}
