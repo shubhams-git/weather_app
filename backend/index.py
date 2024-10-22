@@ -19,7 +19,6 @@ app.add_middleware(
 model1 = joblib.load('./models/model1.pkl')
 model2 = joblib.load('./models/model2.pkl')
 
-
 # OpenWeatherMap API setup
 API_KEY = "9802676f0284938fbb47ec64c489d768"
 
@@ -37,6 +36,17 @@ def fetch_weather_data(city: str):
         raise HTTPException(status_code=404, detail="City not found or invalid API request")
 
     return response.json()
+
+# Helper function to classify the type of weather day
+def classify_weather_day(temp_avg, precipitation, wind_speed):
+    if precipitation > 2:
+        return "Rainy"
+    elif wind_speed > 10:
+        return "Windy"
+    elif temp_avg > 25 and precipitation == 0:
+        return "Sunny"
+    else:
+        return "Cloudy"
 
 # Root endpoint to check the API is running
 @app.get("/")
@@ -98,6 +108,38 @@ def predict(city: CityName):
         "City": city.city,
         "Predictions": predictions
     }
+
+# New endpoint to classify the type of day based on weather data
+@app.post("/classify_day")
+def classify_day(city: CityName):
+    # Fetch the forecast weather data for the given city
+    weather_data = fetch_weather_data(city.city)
+
+    # Classify each day's weather
+    classifications = []
+    for i in range(5):
+        day_data = weather_data['list'][i * 8]  # Get the ith day's weather data (every 24 hours)
+        t_min = day_data['main']['temp_min']
+        t_max = day_data['main']['temp_max']
+        t_average = (t_min + t_max) / 2
+        wind_speed = day_data['wind']['speed']
+        precipitation = day_data.get('rain', {}).get('3h', 0)
+
+        # Classify the weather type
+        day_type = classify_weather_day(t_average, precipitation, wind_speed)
+        classifications.append({
+            "Day": i + 1,
+            "Type": day_type,
+            "Temperature (Average)": t_average,
+            "Precipitation": precipitation,
+            "Wind Speed": wind_speed
+        })
+
+    return {
+        "City": city.city,
+        "Day Classifications": classifications
+    }
+
 
 if __name__ == "__main__":
     import uvicorn
