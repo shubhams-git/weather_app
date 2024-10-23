@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import joblib
+import uvicorn
 import requests
 import os
 from datetime import datetime, timedelta
@@ -19,7 +20,7 @@ app.add_middleware(
 model1 = joblib.load('./models/model1.pkl')
 model2 = joblib.load('./models/model2.pkl')
 
-API_KEY = os.getenv("API_KEY", "your_default_api_key")
+API_KEY = os.getenv("API_KEY", "9802676f0284938fbb47ec64c489d768")
 
 class CityName(BaseModel):
     city: str
@@ -49,6 +50,7 @@ def root():
 
 @app.post("/predict")
 def predict(city: CityName):
+    print(API_KEY)
     weather_data = fetch_weather_data(city.city)
     predictions = []
 
