@@ -15,10 +15,11 @@ const GraphPage = ({ selectedCity, setSelectedCity, onBack }) => {
   console.log("From graph page, API: " + API_URL);
 
   useEffect(() => {
-    if (selectedCity) {
+    if (selectedCity && predictions.length === 0) {
       fetchPredictions();
     }
   }, [selectedCity]);
+  
 
   const fetchPredictions = async () => {
     setIsLoading(true);
@@ -46,13 +47,15 @@ const GraphPage = ({ selectedCity, setSelectedCity, onBack }) => {
           ) : (
             <>
               <ReturnedCityText city={selectedCity} onBack={onBack}/>
-              <div className="flex justify-center mb-10"><DifferenceLineChart predictions={predictions}/></div>
-              <div className="flex justify-evenly">
+              <div className="flex justify-center mb-5 mx-5"><DifferenceLineChart predictions={predictions}/></div>
+              <div className="mx-5 lg:flex lg:flex-row lg:justify-evenly">
                 {/* Pass all 24 points to PredictedTempChart */}
                 <PredictedTempChart predictions={predictions} />
 
                 {/* Pass only the daily aggregated data to DynamicPieChart */}
+                <div className="mx-24 mt-10 lg:m-0">
                 <DynamicPieChart predictions={predictions} />
+                </div>
               </div>
             </>
           )}

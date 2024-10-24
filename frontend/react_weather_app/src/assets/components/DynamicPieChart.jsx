@@ -8,8 +8,7 @@ const DynamicPieChart = ({ predictions }) => {
   // Helper function to aggregate data by day
   const aggregateByDay = (metric) => {
     const dayMap = {};
-
-    // Group data by the "day" field
+  
     predictions.forEach((prediction) => {
       const day = prediction.day;
       if (!dayMap[day]) {
@@ -21,31 +20,30 @@ const DynamicPieChart = ({ predictions }) => {
       dayMap[day].count += 1;
       dayMap[day].totalValue += prediction.weather_data[metric];
     });
-
-    // Calculate average for each day
+  
     const aggregatedData = Object.entries(dayMap).map(([day, data]) => ({
       day: day,
       value: data.totalValue / data.count,
     }));
-
-    // Check if all values are zero
+  
     const allZero = aggregatedData.every(d => d.value === 0);
-
+  
     if (allZero) {
-      // If all values are zero, assign equal slices
-      const equalValue = 1 / aggregatedData.length;
-      return aggregatedData.map(d => ({
-        day: d.day,
-        value: equalValue, // Set equal value for each day
-        displayValue: 0.0  // Show "0.0" as the display value
+      // Assign equal slices and avoid collapse
+      const equalValue = 1 / 4; // Always 4 equal parts
+      return Array(4).fill().map((_, index) => ({
+        day: `Day ${index + 1}`,
+        value: equalValue,
+        displayValue: 0.0, // Display "0.0"
       }));
     }
-
+  
     return aggregatedData.map(d => ({
       ...d,
-      displayValue: d.value.toFixed(1), // Set display value with one decimal
+      displayValue: d.value.toFixed(1),
     }));
   };
+  
 
   useEffect(() => {
     // Clear previous chart
@@ -74,7 +72,8 @@ const DynamicPieChart = ({ predictions }) => {
   
     const pie = d3.pie()
       .sort(null)
-      .value((d) => d.value);
+      .value((d) => d.value || 1); // Ensure each slice has a non-zero value
+  
   
     // Draw the pie chart with a transition
     const path = svg.datum(data).selectAll("path")

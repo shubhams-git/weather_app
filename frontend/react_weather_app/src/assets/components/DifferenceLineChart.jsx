@@ -6,7 +6,7 @@ const DifferenceLineChart = ({ predictions }) => {
 
   useEffect(() => {
     const containerWidth = chartRef.current.getBoundingClientRect().width; // Get container width dynamically
-    const width = containerWidth * 0.8; // 80% of container width
+    const width = containerWidth * 0.99;
     const height = 275;
     const marginTop = 30;
     const marginRight = 50;
@@ -179,7 +179,7 @@ const DifferenceLineChart = ({ predictions }) => {
 
   }, [predictions]);
 
-  return <div ref={chartRef} className="w-full flex justify-center"></div>;
+  return <div ref={chartRef} className="w-full lg:w-2/3 flex justify-center"></div>;
 };
 
 export default DifferenceLineChart;

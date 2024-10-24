@@ -1,16 +1,31 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
 const PredictedTempChart = ({ predictions }) => {
   const chartRef = useRef();
+  const [dimensions, setDimensions] = useState({ width: 800, height: 275 });
+
+  // Function to update the chart size on window resize
+  const updateDimensions = () => {
+    if (chartRef.current) {
+      const width = chartRef.current.clientWidth || 800; // Fall back to default if no clientWidth
+      const height = Math.min(275, width / 3); // Keep height proportional to the width
+      setDimensions({ width, height });
+    }
+  };
+
+  useEffect(() => {
+    // Call updateDimensions on mount and when window resizes
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions); // Clean up event listener
+  }, []);
 
   useEffect(() => {
     // Clear any existing charts in the div
     d3.select(chartRef.current).selectAll('*').remove();
 
-    // Set dimensions and margins for the chart
-    const width = 800;
-    const height = 275;
+    const { width, height } = dimensions; // Use dynamic width and height
     const marginTop = 30;
     const marginRight = 50;
     const marginBottom = 30;
@@ -24,11 +39,10 @@ const PredictedTempChart = ({ predictions }) => {
       t_min: d.t_min_prediction
     }));
 
-    // Set up scales for x (days) and y (temperature values)
-    const x = d3.scaleBand()
-      .domain(data.map(d => d.date))
-      .range([marginLeft, width - marginRight])
-      .padding(0.1);
+    // Set up scales for x (time scale) and y (temperature values)
+    const x = d3.scaleTime()
+      .domain(d3.extent(data, d => d.date))  // x-axis range from the earliest to the latest date
+      .range([marginLeft, width - marginRight]);
 
     const y = d3.scaleLinear()
       .domain([d3.min(data, d => d.t_min) - 5, d3.max(data, d => d.t_max) + 5])
@@ -58,15 +72,10 @@ const PredictedTempChart = ({ predictions }) => {
     // Format the x-axis to display only the "dd/mm" part of the date
     const dateFormat = d3.timeFormat("%d/%m");
 
-    // Get unique dates (only the first occurrence of each day)
-    const uniqueDates = data
-      .filter((d, i, arr) => i === 0 || dateFormat(d.date) !== dateFormat(arr[i - 1].date))
-      .map(d => d.date);
-
-    // Add x-axis with white color and only display unique dates
+    // Add x-axis with white color
     svg.append('g')
       .attr('transform', `translate(0,${height - marginBottom})`)
-      .call(d3.axisBottom(x).tickValues(uniqueDates).tickFormat(d => dateFormat(d)))
+      .call(d3.axisBottom(x).tickFormat(d => dateFormat(d)))
       .selectAll('text') // Select all the x-axis text labels
       .attr('fill', 'white'); // Make the x-axis text white
 
@@ -101,7 +110,7 @@ const PredictedTempChart = ({ predictions }) => {
       .attr('stroke-width', 1.5)
       .attr('clip-path', 'url(#clip)')
       .attr('d', d3.line()
-        .x(d => x(d.date) + x.bandwidth() / 2)
+        .x(d => x(d.date))
         .y(d => y(d.t_max))
       );
 
@@ -113,7 +122,7 @@ const PredictedTempChart = ({ predictions }) => {
       .attr('stroke-width', 1.5)
       .attr('clip-path', 'url(#clip)')
       .attr('d', d3.line()
-        .x(d => x(d.date) + x.bandwidth() / 2)
+        .x(d => x(d.date))
         .y(d => y(d.t_min))
       );
 
@@ -128,7 +137,7 @@ const PredictedTempChart = ({ predictions }) => {
 
     // Add a legend for Min Temp and Max Temp
     const legend = svg.append('g')
-      .attr('transform', `translate(${width - marginRight - 180}, ${marginTop-15})`);  // Position the legend
+      .attr('transform', `translate(${width - marginRight - 180}, ${marginTop-30})`);  // Position the legend
 
     // Legend for Max Temp
     legend.append('rect')
@@ -164,7 +173,7 @@ const PredictedTempChart = ({ predictions }) => {
       .on('end', () => {
         data.forEach(d => {
           svg.append('text')
-            .attr('x', x(d.date) + x.bandwidth() / 2)
+            .attr('x', x(d.date))
             .attr('y', y(d.t_max) - 5)
             .attr('fill', color('t_max'))
             .attr('text-anchor', 'middle')
@@ -177,7 +186,7 @@ const PredictedTempChart = ({ predictions }) => {
       .on('end', () => {
         data.forEach(d => {
           svg.append('text')
-            .attr('x', x(d.date) + x.bandwidth() / 2)
+            .attr('x', x(d.date))
             .attr('y', y(d.t_min) + 15)
             .attr('fill', color('t_min'))
             .attr('text-anchor', 'middle')
@@ -185,9 +194,9 @@ const PredictedTempChart = ({ predictions }) => {
         });
       });
 
-  }, [predictions]);
+  }, [predictions, dimensions]);
 
-  return <div ref={chartRef}></div>;
+  return <div ref={chartRef} className='w-full lg:w-2/3 inline-flex items-end'></div>;
 };
 
 export default PredictedTempChart;
