@@ -50,67 +50,77 @@ const DynamicPieChart = ({ predictions }) => {
   useEffect(() => {
     // Clear previous chart
     d3.select(chartRef.current).selectAll('*').remove();
-
+  
     // Prepare the data for the pie chart based on selected metric
     const data = aggregateByDay(selectedMetric);
-
+  
     // Set up the chart dimensions (enlarged for better visibility)
     const width = 600;  // Increased width
     const height = Math.min(600, width / 1.2);  // Adjusted height
     const outerRadius = height / 2.2;
     const innerRadius = outerRadius * 0.6;  // Slightly larger inner radius for donut style
-
+  
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.day)) // Create color based on the "day" field
       .range(['#FF9800', '#FF5722', '#03A9F4', '#4CAF50']); // Added a 4th color for the extra day
-
+  
     const svg = d3.select(chartRef.current)
       .append("svg")
       .attr("viewBox", [-width / 2, -height / 2, width, height]);
-
+  
     const arc = d3.arc()
       .innerRadius(innerRadius)
       .outerRadius(outerRadius);
-
+  
     const pie = d3.pie()
       .sort(null)
       .value((d) => d.value);
-
-    // Draw the pie chart
+  
+    // Draw the pie chart with a transition
     const path = svg.datum(data).selectAll("path")
       .data(pie)
       .join("path")
       .attr("fill", (d, i) => color(i))
-      .attr("d", arc)
       .attr("stroke", "#121212") // Add stroke for better visibility on dark backgrounds
-      .attr("stroke-width", 2);
-
-    // Add labels to each pie slice (positioned to avoid overflowing)
-    svg.selectAll('text')
-    .data(pie(data))
-    .join('text')
-    .attr('transform', d => `translate(${arc.centroid(d)})`)
-    .attr('text-anchor', 'middle')
-    .attr('fill', 'white')  // White text for dark background
-    .style('font-size', '18px')  // Adjusted font size
-    .each(function(d) {
-      const text = d3.select(this);
-      
-      // Add first line (day)
-      text.append('tspan')
-        .attr('x', 0)
-        .attr('dy', '0.25em')
-        .text(d.data.day);
+      .attr("stroke-width", 2)
+      .transition() // Add transition
+      .duration(1500) // Transition lasts 1.5 seconds
+      .attrTween("d", function(d) {
+        const interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
+        return function(t) {
+          return arc(interpolate(t));
+        };
+      });
   
-      // Add second line (value)
-      text.append('tspan')
-        .attr('x', 0)
-        .attr('dy', '1.2em')  // Adjust this to control vertical spacing
-        .text(d.data.value.toFixed(1));
-    });
+    // Delay adding labels until the transition is over
+    setTimeout(() => {
+      svg.selectAll('text')
+        .data(pie(data))
+        .join('text')
+        .attr('transform', d => `translate(${arc.centroid(d)})`)
+        .attr('text-anchor', 'middle')
+        .attr('fill', 'white')  // White text for dark background
+        .style('font-size', '18px')  // Adjusted font size
+        .each(function(d) {
+          const text = d3.select(this);
+          
+          // Add first line (day)
+          text.append('tspan')
+            .attr('x', 0)
+            .attr('dy', '0.25em')
+            .text(d.data.day);
+      
+          // Add second line (value)
+          text.append('tspan')
+            .attr('x', 0)
+            .attr('dy', '1.2em')  // Adjust this to control vertical spacing
+            .text(d.data.value.toFixed(1));
+        });
+    }, 1500); // Set the delay to match the transition duration (1.5 seconds)
   
   }, [selectedMetric, predictions]);
-
+  
+  
   // Radio button handler to update selected metric
   const handleMetricChange = (event) => {
     setSelectedMetric(event.target.value);
@@ -119,36 +129,36 @@ const DynamicPieChart = ({ predictions }) => {
   return (
     <div className="pie-chart-container text-center text-white">
       {/* Radio buttons for selecting the metric */}
-      <div className="radio-buttons flex justify-center space-x-4">
-        <label className="inline-flex items-center space-x-2">
+      <div className="radio-buttons flex justify-center space-x-6">
+        <label className="inline-flex items-center space-x-2 hover:text-orange-500 transition duration-300 ease-in-out">
           <input
             type="radio"
             value="precipitation"
             checked={selectedMetric === "precipitation"}
             onChange={handleMetricChange}
-            className="form-radio text-orange-500 bg-slate-800 border-slate-700 focus:ring-orange-500"
+            className="form-radio text-orange-500 bg-slate-800 border-slate-700"
           />
-          <span className="text-sm">Precipitation</span>
+          <span className="text-base font-medium">Precipitation</span>
         </label>
-        <label className="inline-flex items-center space-x-2">
+        <label className="inline-flex items-center space-x-2 hover:text-orange-500 transition duration-300 ease-in-out">
           <input
             type="radio"
             value="wind_speed"
             checked={selectedMetric === "wind_speed"}
             onChange={handleMetricChange}
-            className="form-radio text-orange-500 bg-slate-800 border-slate-700 focus:ring-orange-500"
+            className="form-radio text-orange-500 bg-slate-800 border-slate-700"
           />
-          <span className="text-sm">Wind Speed</span>
+          <span className="text-base font-medium">Wind Speed</span>
         </label>
-        <label className="inline-flex items-center space-x-2">
+        <label className="inline-flex items-center space-x-2 hover:text-orange-500 transition duration-300 ease-in-out">
           <input
             type="radio"
             value="pressure"
             checked={selectedMetric === "pressure"}
             onChange={handleMetricChange}
-            className="form-radio text-orange-500 bg-slate-800 border-slate-700 focus:ring-orange-500"
+            className="form-radio text-orange-500 bg-slate-800 border-slate-700"
           />
-          <span className="text-sm">Pressure</span>
+          <span className="text-base font-medium">Pressure</span>
         </label>
       </div>
       {/* Pie chart rendering */}

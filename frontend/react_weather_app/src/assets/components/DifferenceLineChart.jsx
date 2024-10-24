@@ -12,7 +12,7 @@ const DifferenceLineChart = ({ predictions }) => {
     const marginRight = 50;
     const marginBottom = 30;
     const marginLeft = 50;
-    const transitionDuration = 1000; // Animation duration for smoother transitions
+    const transitionDuration = 5000; // 3-second animation
 
     // Clear any existing charts in the div
     d3.select(chartRef.current).selectAll('*').remove();
@@ -32,7 +32,7 @@ const DifferenceLineChart = ({ predictions }) => {
       .domain([d3.min(data, d => d.avg_temperature) - 5, d3.max(data, d => d.avg_temperature) + 5])
       .range([height - marginBottom, marginTop]);
 
-    // Create the SVG container with Tailwind width class (w-4/5)
+    // Create the SVG container
     const svg = d3.select(chartRef.current)
       .append('svg')
       .attr('width', width)
@@ -40,17 +40,28 @@ const DifferenceLineChart = ({ predictions }) => {
       .attr('viewBox', [0, 0, width, height])
       .attr('style', 'max-width: 100%; height: auto; font: 10px sans-serif;');
 
-    // Format the x-axis to display "dd/mm, HH" format
-    const dateFormat = d3.timeFormat("%d/%m, %H hrs");
+    // Define a clip path to animate the line along the x-axis
+    svg.append("clipPath")
+      .attr("id", "clip")
+      .append("rect")
+      .attr("width", 0)  // Initially set width to 0 for the transition
+      .attr("height", height)
+      .transition()
+      .duration(transitionDuration)
+      .attr("width", width);  // Transition to full width over 3 seconds
 
     // Add x-axis
+    const dateFormat = d3.timeFormat("%d/%m, %H hrs");
     svg.append('g')
       .attr('transform', `translate(0,${height - marginBottom-25})`)
       .call(d3.axisBottom(x).tickFormat(dateFormat))
-      .selectAll('text')  // Select all the x-axis text labels
-      .attr('fill', 'white')  // Make the x-axis text white
-      .attr('transform', 'rotate(-45)')  // Rotate labels for better readability
-      .style('text-anchor', 'end');  // Align text to the end
+      .selectAll('text')
+      .attr('fill', 'white')
+      .attr('transform', 'rotate(-45)')
+      .style('text-anchor', 'end');
+
+    svg.selectAll('.domain, .tick line')
+      .attr('stroke', 'white');
 
     // Add y-axis
     svg.append('g')
@@ -59,6 +70,9 @@ const DifferenceLineChart = ({ predictions }) => {
       .selectAll('text')
       .attr('fill', 'white');
 
+    svg.selectAll('.domain, .tick line')
+      .attr('stroke', 'white');
+    
     // Add y-axis label (Temperature in °C)
     svg.append('text')
       .attr('transform', 'rotate(-90)')
@@ -68,67 +82,62 @@ const DifferenceLineChart = ({ predictions }) => {
       .attr('fill', 'white')
       .text('Temperature (in °C)');
 
-    // Define area for above a baseline (using a simple threshold or average temperature)
+    // Define the average temperature line
     const avgTemperature = d3.mean(data, d => d.avg_temperature);
 
     // Create the area for temperatures above the average with transitions
     svg.append('path')
       .datum(data)
       .attr('fill', 'lightblue')
+      .attr('clip-path', 'url(#clip)')
       .attr('d', d3.area()
         .x(d => x(d.date))
-        .y0(d => y(avgTemperature))  // Use average temperature as the baseline
-        .y1(d => y(Math.max(d.avg_temperature, avgTemperature)))  // Area for values above the baseline
-      )
-      .transition()
-      .duration(transitionDuration)
-      .ease(d3.easeLinear); // Smooth transition
+        .y0(d => y(avgTemperature))
+        .y1(d => y(Math.max(d.avg_temperature, avgTemperature)))
+      );
 
     // Create the area for temperatures below the average with transitions
     svg.append('path')
       .datum(data)
       .attr('fill', 'orange')
+      .attr('clip-path', 'url(#clip)')
       .attr('d', d3.area()
         .x(d => x(d.date))
-        .y0(d => y(avgTemperature))  // Use average temperature as the baseline
-        .y1(d => y(Math.min(d.avg_temperature, avgTemperature)))  // Area for values below the baseline
-      )
-      .transition()
-      .duration(transitionDuration)
-      .ease(d3.easeLinear); // Smooth transition
+        .y0(d => y(avgTemperature))
+        .y1(d => y(Math.min(d.avg_temperature, avgTemperature)))
+      );
 
     // Draw the line for avg_temperature with transition
-    svg.append('path')
+    const linePath = svg.append('path')
       .datum(data)
       .attr('fill', 'none')
       .attr('stroke', 'black')
       .attr('stroke-width', 1.5)
+      .attr('clip-path', 'url(#clip)')
       .attr('d', d3.line()
         .x(d => x(d.date))
         .y(d => y(d.avg_temperature))
       )
       .transition()
       .duration(transitionDuration)
-      .ease(d3.easeLinear); // Smooth transition for the line
+      .ease(d3.easeLinear);
 
-    // Optionally, label the points with temperature values
-    data.forEach(d => {
-      svg.append('text')
-        .attr('x', x(d.date))
-        .attr('y', y(d.avg_temperature) - 5)
-        .attr('fill', 'white')
-        .attr('text-anchor', 'middle')
-        .text(d.avg_temperature.toFixed(1))  // Display temperature to one decimal
-        .transition()
-        .duration(transitionDuration)
-        .ease(d3.easeLinear);  // Transition for labels as well
+    // Wait for the transition to complete before adding text labels
+    linePath.on('end', () => {
+      data.forEach(d => {
+        svg.append('text')
+          .attr('x', x(d.date))
+          .attr('y', y(d.avg_temperature) - 5)
+          .attr('fill', 'white')
+          .attr('text-anchor', 'middle')
+          .text(d.avg_temperature.toFixed(1));  // Display temperature to one decimal
+      });
     });
 
     // Add Legend
     const legend = svg.append('g')
-      .attr('transform', `translate(${width - marginRight - 200},${marginTop})`); // Positioning the legend in the top right
+      .attr('transform', `translate(${width - marginRight - 200},${marginTop})`);
 
-    // Legend for the blue area (above average)
     legend.append('rect')
       .attr('x', 0)
       .attr('y', 0)
@@ -142,7 +151,6 @@ const DifferenceLineChart = ({ predictions }) => {
       .attr('fill', 'white')
       .text('Above Average Temperature');
 
-    // Legend for the orange area (below average)
     legend.append('rect')
       .attr('x', 0)
       .attr('y', 20)
@@ -156,7 +164,6 @@ const DifferenceLineChart = ({ predictions }) => {
       .attr('fill', 'white')
       .text('Below Average Temperature');
 
-    // Legend for the black line (actual temperature)
     legend.append('rect')
       .attr('x', 0)
       .attr('y', 40)
@@ -172,7 +179,7 @@ const DifferenceLineChart = ({ predictions }) => {
 
   }, [predictions]);
 
-  return <div ref={chartRef} className="w-full flex justify-center"></div>; // Tailwind class for centering
+  return <div ref={chartRef} className="w-full flex justify-center"></div>;
 };
 
 export default DifferenceLineChart;
