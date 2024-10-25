@@ -1,6 +1,6 @@
 export const WeatherCard = ({type, day,temperature, windSpeed, precipitation, pressure, tmin, tmax})=>{
     return <div className="in-line flex justify-center">
-        <div className="rounded-tr-full grid grid-cols-6 bg-gradient-to-br from-bawejas-colour-500 to-w max-w-52 lg:max-w-64 lg:min-w-56 shadow-2xl">
+        <div className="rounded-tr-full grid grid-cols-6 bg-gradient-to-br from-bawejas-colour-500 to-w max-w-52 lg:max-w-64 lg:min-w-60 lg:mx-15 shadow-2xl">
         <div className="flex justify-center items-center col-start-2 col-span-4 lg:mt-5">
             {type=="Sunny"?
             <img className="w-20" src="sunny.png "></img>:
