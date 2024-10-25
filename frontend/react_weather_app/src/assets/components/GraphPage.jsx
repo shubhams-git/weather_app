@@ -23,15 +23,32 @@ const GraphPage = ({ selectedCity, setSelectedCity, onBack }) => {
 
   const fetchPredictions = async () => {
     setIsLoading(true);
+    setError(null); // Clear any previous errors
     try {
       const response = await axios.get(API_URL);
       setPredictions(response.data.predictions);
       setIsLoading(false);
     } catch (error) {
-      setError("Error fetching predictions");
       setIsLoading(false);
+      if (error.response) {
+        // Errors from the server (e.g., 4xx or 5xx HTTP status codes)
+        if (error.response.status === 404) {
+          setError("City not found. Please ensure the city name is correct.");
+        } else if (error.response.status === 500) {
+          setError("Server error. Please try again later.");
+        } else {
+          setError("Unexpected error occurred. Please try again.");
+        }
+      } else if (error.request) {
+        // No response from server
+        setError("Network error. Please check your internet connection.");
+      } else {
+        // Other errors
+        setError("An error occurred. Please try again.");
+      }
     }
   };
+  
 
   return (
     <div className="z-20 relative min-h-screen w-full bg-slate-950">
@@ -43,7 +60,10 @@ const GraphPage = ({ selectedCity, setSelectedCity, onBack }) => {
           {isLoading ? (
             <Loader />
           ) : error ? (
-            <div className="text-white">{error}</div>
+              <div className="bg-red-500 text-white p-4 rounded-md mt-4">
+                <p className="font-semibold">Oops! Something went wrong:</p>
+                <p>{error}</p>
+              </div>
           ) : (
             <>
               <ReturnedCityText city={selectedCity} onBack={onBack}/>

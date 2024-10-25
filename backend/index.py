@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import joblib
 import uvicorn
 import requests
@@ -48,9 +49,31 @@ def classify_weather_day(temp_avg, precipitation, wind_speed):
 def root():
     return {"message": "ML Models API using OpenWeatherMap data is running"}
 
+
 @app.post("/predict")
 def predict(city: CityName):
-    return generate_predictions(city.city)
+    try:
+        return generate_predictions(city.city)
+    except HTTPException as http_exc:
+        raise http_exc
+    except requests.exceptions.RequestException:
+        # Network error when calling external API
+        return JSONResponse(
+            status_code=503,
+            content={"message": "Weather service unavailable. Please try again later."}
+        )
+    except KeyError:
+        # Handle cases where expected data is missing
+        return JSONResponse(
+            status_code=500,
+            content={"message": "Unexpected data format received. Please contact support."}
+        )
+    except Exception as e:
+        # General error handler
+        return JSONResponse(
+            status_code=500,
+            content={"message": f"An unexpected error occurred: {str(e)}"}
+        )
 
 @app.get("/predict")
 def predict_get(city: str = Query(..., description="City name for weather prediction")):

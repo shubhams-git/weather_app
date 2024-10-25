@@ -1,15 +1,25 @@
 import { useState } from "react";
 export const SearchBar = ({ onSearch }) => {
-    const [searchValue, setSearchValue] = useState('');
-  
-    const handleButtonClick = () => {
-      if (searchValue.trim() !== '') {
-        onSearch(searchValue); // Call the parent function
-      }
-    };
-  
-    return (
-      <div className="flex rounded-full border-2 border-transparent focus-within:border-blue-500 overflow-hidden max-w-md mx-auto font-[sans-serif]">
+  const [searchValue, setSearchValue] = useState("");
+  const [error, setError] = useState("");
+
+  const handleButtonClick = () => {
+    if (validateCity(searchValue)) {
+      onSearch(searchValue); // Call the parent function
+      setError(""); // Clear previous errors
+    } else {
+      setError("Please enter a valid city name (alphabetical characters only).");
+    }
+  };
+
+  const validateCity = (city) => {
+    const cityRegex = /^[a-zA-Z\s]+$/;
+    return city.trim() !== "" && cityRegex.test(city);
+  };
+
+  return (
+    <div className="flex flex-col items-center max-w-md mx-auto font-[sans-serif]">
+      <div className="flex rounded-full border-2 border-transparent focus-within:border-blue-500 overflow-hidden w-full">
         <input
           type="text"
           value={searchValue}
@@ -19,7 +29,7 @@ export const SearchBar = ({ onSearch }) => {
         />
         <button
           onClick={handleButtonClick}
-          className="flex items-center justify-center bg-[#24292F] hover:bg-[#24292F]/90 focus:outline-none focus:ring-[#24292F]/50 font-medium rounded-lg dark:focus:ring-gray-500 dark:hover:bg-[#050708]/30 px-6"
+          className="flex items-center justify-center bg-[#24292F] hover:bg-[#24292F]/90 focus:outline-none focus:ring-[#24292F]/50 font-medium rounded-lg px-6"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -33,6 +43,7 @@ export const SearchBar = ({ onSearch }) => {
           </svg>
         </button>
       </div>
-    );
-  };
-  
+      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+    </div>
+  );
+};
