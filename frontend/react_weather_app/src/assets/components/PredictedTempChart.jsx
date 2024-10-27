@@ -169,30 +169,35 @@ const PredictedTempChart = ({ predictions }) => {
 
     // Wait for the transition to complete before adding text labels
     maxLine.transition()
-      .duration(transitionDuration)
-      .on('end', () => {
-        data.forEach(d => {
+    .duration(transitionDuration)
+    .on('end', () => {
+      data.forEach((d, i) => {
+        if (i % 2 === 1) { // Only label every alternate point
           svg.append('text')
             .attr('x', x(d.date))
             .attr('y', y(d.t_max) - 5)
             .attr('fill', color('t_max'))
             .attr('text-anchor', 'middle')
             .text(d.t_max);
-        });
+        }
       });
+    });
 
     minLine.transition()
-      .duration(transitionDuration)
-      .on('end', () => {
-        data.forEach(d => {
+    .duration(transitionDuration)
+    .on('end', () => {
+      data.forEach((d, i) => {
+        if (i % 2 === 1) { // Only label every alternate point
           svg.append('text')
             .attr('x', x(d.date))
             .attr('y', y(d.t_min) + 15)
             .attr('fill', color('t_min'))
             .attr('text-anchor', 'middle')
             .text(d.t_min);
-        });
+        }
       });
+    });
+
 
   }, [predictions, dimensions]);
 

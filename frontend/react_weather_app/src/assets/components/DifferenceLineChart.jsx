@@ -124,15 +124,18 @@ const DifferenceLineChart = ({ predictions }) => {
 
     // Wait for the transition to complete before adding text labels
     linePath.on('end', () => {
-      data.forEach(d => {
-        svg.append('text')
-          .attr('x', x(d.date))
-          .attr('y', y(d.avg_temperature) - 5)
-          .attr('fill', 'white')
-          .attr('text-anchor', 'middle')
-          .text(d.avg_temperature.toFixed(1));  // Display temperature to one decimal
+      data.forEach((d, i) => {
+        if (i % 2 === 1) { // Only label every alternate point
+          svg.append('text')
+            .attr('x', x(d.date))
+            .attr('y', y(d.avg_temperature) - 5)
+            .attr('fill', 'white')
+            .attr('text-anchor', 'middle')
+            .text(d.avg_temperature.toFixed(1));  // Display temperature to one decimal
+        }
       });
     });
+
 
     // Add Legend
     const legend = svg.append('g')
