@@ -36,11 +36,11 @@ def fetch_weather_data(city: str):
     return response.json()
 
 def classify_weather_day(temp_avg, precipitation, wind_speed):
-    if precipitation > 2:
+    if precipitation > 1.5:
         return "Rainy"
-    elif wind_speed > 10:
+    elif wind_speed > 8:
         return "Windy"
-    elif temp_avg > 25 and precipitation == 0:
+    elif temp_avg > 25 and precipitation < 0.2:
         return "Sunny"
     else:
         return "Cloudy"

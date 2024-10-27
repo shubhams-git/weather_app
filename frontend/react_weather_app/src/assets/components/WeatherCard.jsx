@@ -17,19 +17,19 @@ export const WeatherCard = ({type, day,temperature, windSpeed, precipitation, pr
         <div className="flex justify-center col-start-2 col-span-4 text-3xl lg:text-4xl text-red-50 font-serif font-extrabold mb-3">
             {temperature}°C
         </div>
-        <div className="col-start-2 col-span-6 text-[9.5px] sm:text-[12px] md:text-sm lg:text-base font-mono text-red-50 mb-1">
+        <div className="col-start-2 col-span-6 text-[8.5px] sm:text-[11px] md:text-[13px] lg:text-[15px] font-mono text-red-50 mb-1">
             Wind Speed: {windSpeed} m/s
         </div>
-        <div className="col-start-2 col-span-6 text-[9.5px] sm:text-[12px] md:text-sm lg:text-base font-mono text-red-50 mb-1">
+        <div className="col-start-2 col-span-6 text-[8.5px] sm:text-[11px] md:text-[13px] lg:text-[15px] font-mono text-red-50 mb-1">
             Precipitation: {precipitation} mm/h
         </div>
-        <div className="col-start-2 col-span-6 text-[9.5px] sm:text-[12px] md:text-sm lg:text-base font-mono text-red-50 mb-1">
+        <div className="col-start-2 col-span-6 text-[8.5px] sm:text-[11px] md:text-[13px] lg:text-[15px] font-mono text-red-50 mb-1">
             Pressure: {pressure} hPa
         </div>
-        <div className="col-start-2 col-span-6 text-[9.5px] sm:text-[12px] md:text-sm lg:text-base font-mono text-red-50 mb-1">
+        <div className="col-start-2 col-span-6 text-[8.5px] sm:text-[11px] md:text-[13px] lg:text-[15px] font-mono text-red-50 mb-1">
             Min. Temp: {tmin}°C
         </div>
-        <div className="col-start-2 col-span-6 text-[9.5px] sm:text-[12px] md:text-sm lg:text-base font-mono text-red-50 mb-4">
+        <div className="col-start-2 col-span-6 text-[8.5px] sm:text-[11px] md:text-[13px] lg:text-[15px] font-mono text-red-50 mb-4">
             Max. Temp: {tmax}°C
         </div>
     </div>
