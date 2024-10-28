@@ -70,7 +70,10 @@ frontend/
 - **Responsive UI**: Built with Tailwind CSS to ensure compatibility across devices.
 - **Smooth Navigation**: The app has a user-friendly interface, allowing seamless navigation between different sections.
 
+
 ## Getting Started
+
+
 
 ### Prerequisites
 
@@ -82,8 +85,17 @@ frontend/
 
 ### Installation
 
+### 1. Clone the Repository
+To get started, clone the GitHub repository:
+
+
 1. **Backend Setup**
     - Clone the repository and navigate to the `backend` directory.
+      ```bash
+      git clone https://github.com/shubhams-git/weather_app.git
+      cd weather_app
+      cd backend
+      ```
     - Install the required Python packages:
       ```bash
       pip install -r requirements.txt
@@ -95,6 +107,10 @@ frontend/
 
 2. **Frontend Setup**
     - Navigate to the `frontend/react_weather_app` directory.
+      ```bash
+      cd frontend
+      cd react_weather_app
+      ```
     - Install the required npm packages:
       ```bash
       npm install
