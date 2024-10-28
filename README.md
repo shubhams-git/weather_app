@@ -77,8 +77,8 @@ frontend/
 
 ### Prerequisites
 
-- **Backend**: Python (version 3.7+), FastAPI, joblib for loading models
-- **Frontend**: Node.js, npm or yarn
+- **Backend**: Python (version 3.7+)
+- **Frontend**: Node.js
 - **Environment Variables**: 
     - **API_KEY** for OpenWeatherMap API
     - **Frontend URL** (for CORS settings in FastAPI)
