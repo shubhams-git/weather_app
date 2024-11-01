@@ -6,8 +6,10 @@ import { SearchBar } from "./assets/components/SearchBar";
 import { WeatherCards } from "./assets/components/WeatherCards";
 import { Loader } from "./assets/components/Loader";
 import { ReturnedCityText } from "./assets/components/ReturnedCityText";
+
 import GraphPage from "./assets/components/GraphPage"; // New GraphPage component
 import axios from "axios";
+import { AboutPage } from "./assets/components/AboutPage";
 
 export const App = () => {
   const [isSearching, setIsSearching] = useState(false);
@@ -100,7 +102,7 @@ export const App = () => {
                 />
               }
             />
-            <Route path="/about" element={<div className="text-white text-center">About Us</div>} />
+            <Route path="/about" element={<AboutPage />} />
           </Routes>
         </div>
       </div>
