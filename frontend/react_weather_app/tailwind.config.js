@@ -25,8 +25,13 @@ export default {
         'wave': 'wave 3s ease-in-out infinite',
         'bounce-slow': 'bounce 2s infinite',
         'rotate-flicker': 'rotateFlicker 4s ease-in-out infinite',
+        'float-bounce': 'floatBounce 4s ease-in-out infinite', // New animation for TailwindLogo
       },
       keyframes: {
+        bounce: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
         blinkScale: {
           '0%, 100%': { transform: 'scale(1)', opacity: '1' },
           '50%': { transform: 'scale(1.05)', opacity: '0.7' },
@@ -43,14 +48,19 @@ export default {
           '0%, 100%': { transform: 'scale(1)', opacity: '1' },
           '50%': { transform: 'scale(1.1)', opacity: '0.8' },
         },
+        floatBounce: { // New keyframe for floating bounce effect
+          '0%, 100%': { transform: 'translateY(0)', opacity: '1' },
+          '50%': { transform: 'translateY(-20px)', opacity: '0.9' },
+        },
       },
       dropShadow: {
-        glow: '0 0 15px rgba(59, 130, 246, 0.7), 0 0 30px rgba(59, 130, 246, 0.6)',  // Universal glow effect
-        fastapi: '0 0 15px rgba(34, 197, 94, 0.7), 0 0 30px rgba(34, 197, 94, 0.6)',
         python: '0 0 10px rgba(255, 193, 7, 0.7)',
         openweathermap: '0 0 15px rgba(255, 165, 0, 0.6)',
         d3: '0 0 10px rgba(255, 87, 34, 0.6)',
         vite: '0 0 15px rgba(138, 43, 226, 0.6)',
+        react: '0 0 15px rgba(97, 218, 251, 0.7)', // React logo shadow effect
+        fastapi: '0 0 12px rgba(29, 201, 137, 0.6)', // FastAPI logo shadow effect
+        tailwind: '0 0 15px rgba(56, 189, 248, 0.7)', // New shadow effect for TailwindLogo
       },
     },
   },
