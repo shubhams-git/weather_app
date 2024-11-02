@@ -1,5 +1,5 @@
 import { D3Logo } from "./D3Logo";
-import { FastApiLogo } from "./FastAPILogo";
+import { FastApiLogo } from "./FastApiLogo";
 import { OpenWeatherMapLogo } from "./OpenWeatherMapLogo";
 import { PythonLogo } from "./PythonLogo";
 import { ReactLogo } from "./ReactLogo";
