@@ -8,8 +8,8 @@ import { TailwindLogo } from "./TailwindLogo";
 
 export const AboutPage = () => {
   return (
-    <div className="pt-10 px-4 sm:px-8 md:px-16 lg:px-24 text-gray-300 font-playwrite">
-      <div className="flex justify-center text-3xl mb-10">
+    <div className="pt-10 px-6 sm:px-10 md:px-16 lg:px-24 xl:px-32 text-gray-300 font-playwrite max-w-7xl mx-auto">
+      <div className="flex justify-center text-xl sm:text-2xl lg:text-3xl font-medium mb-10 text-center">
         Here’s Our 
         <span className="font-extrabold from-sky-200 via-cyan-400 to-blue-300 bg-gradient-to-l bg-clip-text text-transparent px-2">
           Tech-Stack!
