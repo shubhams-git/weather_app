@@ -6,8 +6,9 @@ import { SearchBar } from "./assets/components/SearchBar";
 import { WeatherCards } from "./assets/components/WeatherCards";
 import { Loader } from "./assets/components/Loader";
 import { ReturnedCityText } from "./assets/components/ReturnedCityText";
+import { BackendStatusNotice } from "./assets/components/BackendStatusNotice"; // Import the notice component
 
-import GraphPage from "./assets/components/GraphPage"; // New GraphPage component
+import GraphPage from "./assets/components/GraphPage";
 import axios from "axios";
 import { AboutPage } from "./assets/components/AboutPage";
 
@@ -37,11 +38,11 @@ export const App = () => {
     };
 
     fetchWeatherData();
-  }, [selectedCity]); // Re-fetch weather data when selectedCity changes
+  }, [selectedCity]);
 
   const handleSearch = async (searchValue) => {
     setIsSearching(true);
-    setSelectedCity(searchValue); // Set selectedCity when search is successful
+    setSelectedCity(searchValue);
     setSearchCompleted(false);
 
     try {
@@ -64,9 +65,10 @@ export const App = () => {
   return (
     <Router>
       <div className="z-20 relative min-h-screen w-full bg-slate-950">
+        <BackendStatusNotice /> {/* Display the backend delay notice */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] -z-10"></div>
         <div className="relative flex flex-col">
-          <AppBar /> {/* Keep AppBar on all pages */}
+          <AppBar />
           <Routes>
             <Route
               path="/"
@@ -79,7 +81,10 @@ export const App = () => {
                     {isSearching ? (
                       <Loader />
                     ) : (searchCompleted || selectedCity !== "") ? (
-                      <ReturnedCityText city={selectedCity} onBack={handleBackToSearch} />
+                      <ReturnedCityText
+                        city={selectedCity}
+                        onBack={handleBackToSearch}
+                      />
                     ) : (
                       <SearchBar onSearch={handleSearch} />
                     )}
@@ -95,10 +100,10 @@ export const App = () => {
             <Route
               path="/graph"
               element={
-                <GraphPage 
-                  selectedCity={selectedCity} 
-                  setSelectedCity={setSelectedCity} 
-                  onBack={handleBackToSearch} 
+                <GraphPage
+                  selectedCity={selectedCity}
+                  setSelectedCity={setSelectedCity}
+                  onBack={handleBackToSearch}
                 />
               }
             />

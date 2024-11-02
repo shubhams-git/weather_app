@@ -7,6 +7,7 @@ export default {
     extend: {
       fontFamily:{
         'playwrite': [ "Playwrite GB S", "cursive"],
+        'logo-font': ["Great Vibes", "cursive"]
       },
       colors: {
         transparent: 'transparent',
