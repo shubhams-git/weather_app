@@ -49,7 +49,7 @@ def classify_weather_day(temp_avg, precipitation, wind_speed):
 def root():
     return {"message": "ML Models API using OpenWeatherMap data is running"}
 
- @app.head("/health")
+@app.head("/health")
 async def health_check_head():
     return JSONResponse(status_code=200)
 
