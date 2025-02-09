@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi import Response
 import joblib
 import uvicorn
 import requests
@@ -51,7 +52,7 @@ def root():
 
 @app.head("/health")
 async def health_check_head():
-    return JSONResponse(status_code=200)
+    return Response(status_code=200)
 
 
 @app.post("/predict")
