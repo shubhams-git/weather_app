@@ -49,6 +49,9 @@ def classify_weather_day(temp_avg, precipitation, wind_speed):
 def root():
     return {"message": "ML Models API using OpenWeatherMap data is running"}
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 
 @app.post("/predict")
 def predict(city: CityName):

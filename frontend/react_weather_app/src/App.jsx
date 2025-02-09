@@ -6,7 +6,7 @@ import { SearchBar } from "./assets/components/SearchBar";
 import { WeatherCards } from "./assets/components/WeatherCards";
 import { Loader } from "./assets/components/Loader";
 import { ReturnedCityText } from "./assets/components/ReturnedCityText";
-import { BackendStatusNotice } from "./assets/components/BackendStatusNotice"; // Import the notice component
+import { BackendStatusNotice } from "./assets/components/BackendStatusNotice"; 
 
 import GraphPage from "./assets/components/GraphPage";
 import axios from "axios";
@@ -20,7 +20,6 @@ export const App = () => {
 
   const API_URL = import.meta.env.VITE_API_URL + "/predict";
 
-  // Fetch weather data when selectedCity changes
   useEffect(() => {
     const fetchWeatherData = async () => {
       if (selectedCity) {
