@@ -54,6 +54,9 @@ def root():
 async def health_check_head():
     return Response(status_code=200)
 
+@app.get("/health")
+async def health_check_head():
+    return Response(status_code=200)
 
 @app.post("/predict")
 def predict(city: CityName):
