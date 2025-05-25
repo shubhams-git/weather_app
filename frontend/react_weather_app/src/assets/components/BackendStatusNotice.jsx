@@ -15,9 +15,7 @@ export const BackendStatusNotice = () => {
     showNotice && (
       <div className="w-full bg-yellow-100 border-b border-yellow-300 text-yellow-800 text-center py-3 z-50">
         <p>
-          <strong>Notice:</strong> Our backend is hosted on Render, so the
-          initial response might take up to 2 minutes if the server is inactive.
-          Thank you for your patience!
+          <strong>Notice:</strong> Our server may take up to 2 minutes to respond if it’s just starting up. Thanks for your patience!
         </p>
       </div>
     )
